@@ -41,4 +41,8 @@ class AuthServices {
           SnackBar(content: Text("Error while logging out :- $e")));
     });
   }
+
+  String getUid(){
+    return _auth.currentUser!.uid;
+  }
 }

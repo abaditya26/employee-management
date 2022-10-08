@@ -16,8 +16,10 @@ class UserDashboard extends StatelessWidget {
           showModalBottomSheet(
               context: context,
               builder: (context) {
-                return AddTaskWidget();
-              });
+                return const AddTaskWidget();
+              }).then((value) {
+                //TODO:refresh the data
+          });
         },
         backgroundColor: const Color(0xFF4B39EF),
         elevation: 8,
