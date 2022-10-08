@@ -1,3 +1,4 @@
+import 'package:employee_management/pages/user_dashboard.dart';
 import 'package:employee_management/services/auth_services.dart';
 import 'package:employee_management/services/database_services.dart';
 import 'admin_dashboard.dart';
@@ -46,13 +47,22 @@ class _LoginWidgetState extends State<LoginWidget> {
           String uid = credentials.user!.uid;
           _db.isUserAdmin(uid).then((value) {
             if (value) {
-              // TODO: user is admin
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const admin_dashboard(),
+                ),
+              );
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Admin User Logged in")));
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Employee logged in.")));
-              //TODO: user is employee
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const UserDashboard()),
+                  (route) => false);
             }
             setState(() {
               _isLoading = false;
@@ -361,13 +371,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                                     : ElevatedButton(
                                         onPressed: () {
                                           signIn();
-                                           Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      admin_dashboard(),
-                                                ),
-                                              );
                                         },
                                         style: ElevatedButton.styleFrom(
                                             shape: const StadiumBorder(),

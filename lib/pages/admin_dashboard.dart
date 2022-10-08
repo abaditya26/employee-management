@@ -116,7 +116,7 @@ class _admin_dashboardState extends State<admin_dashboard> {
                                 controller: textController,
                                 obscureText: false,
                                 decoration: InputDecoration(
-                                  labelText: 'Emplyoee name...',
+                                  labelText: 'Employee name...',
                                   labelStyle: GoogleFonts.urbanist(
                                     color: const Color(0xFF95A1AC),
                                     fontWeight: FontWeight.w500,
