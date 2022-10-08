@@ -1,7 +1,7 @@
 import 'package:employee_management/services/auth_services.dart';
 import 'package:employee_management/services/database_services.dart';
-
-import '../main.dart';
+import 'admin_dashboard.dart';
+import '../../main.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -47,11 +47,11 @@ class _LoginWidgetState extends State<LoginWidget> {
           _db.isUserAdmin(uid).then((value) {
             if (value) {
               // TODO: user is admin
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text("Admin User Logged in")));
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Admin User Logged in")));
             } else {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text("Employee logged in.")));
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Employee logged in.")));
               //TODO: user is employee
             }
             setState(() {
@@ -351,16 +351,23 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 padding: const EdgeInsetsDirectional.fromSTEB(
                                     0, 0, 4, 0),
                                 child: _isLoading
-                                    ? const Padding(padding:
-                                EdgeInsetsDirectional.fromSTEB(
-                                    25, 12, 25, 12),
-                                      child: Center(
+                                    ? const Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            25, 12, 25, 12),
+                                        child: Center(
                                           child: CircularProgressIndicator(),
                                         ),
-                                    )
+                                      )
                                     : ElevatedButton(
                                         onPressed: () {
                                           signIn();
+                                           Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      admin_dashboard(),
+                                                ),
+                                              );
                                         },
                                         style: ElevatedButton.styleFrom(
                                             shape: const StadiumBorder(),
