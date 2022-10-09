@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:employee_management/models/user_model.dart';
 import 'package:employee_management/services/auth_services.dart';
 import 'package:employee_management/services/database_services.dart';
+import 'package:employee_management/services/storage_services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,9 +28,11 @@ class _UserProfileState extends State<UserProfile> {
   final ImagePicker _picker = ImagePicker();
   final _db = DatabaseServices();
   final _auth = AuthServices();
+  final _storage = StorageServices();
   bool _passwordVisibility = false;
   File? image;
   bool _isLoading = false;
+  String progress = "";
 
   updateProfile() {
     if (_formKey.currentState!.validate()) {
@@ -39,30 +42,49 @@ class _UserProfileState extends State<UserProfile> {
       if (_passwordController.text.isNotEmpty) {
         //update password
         _auth.changePassword(_passwordController.text).then((value) {
-          updateUserData();
-        }).catchError((e){
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error :- $e")));
+          checkAndUpdateImageData();
+        }).catchError((e) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Error :- $e")));
         });
       } else {
         //proceed with only profile update
-        updateUserData();
+        checkAndUpdateImageData();
       }
     }
   }
 
-  updateUserData() {
+  checkAndUpdateImageData() {
+    if (image == null) {
+      updateUserData("");
+    } else {
+      //upload image and update image data
+      _storage.updateProfileImage(image!, widget.user.uid, (p0) {
+        setState(() {
+        progress = "Uploading :- $p0%";
+        });
+      }, updateUserData);
+    }
+  }
+
+  updateUserData(String imagePath) {
     widget.user.name = _nameController.text;
     widget.user.contactNo = _contactNoController.text;
+    if (imagePath.isNotEmpty) {
+      widget.user.profileImage = imagePath;
+    }
     _db.updateUserData(widget.user).then((value) {
       //user updated
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("User Updated")));
+      progress = "";
       setState(() {
         _isLoading = false;
       });
     }).catchError((e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Error:- $e")));
+      progress = "";
       setState(() {
         _isLoading = false;
       });
@@ -602,7 +624,9 @@ class _UserProfileState extends State<UserProfile> {
                             ),
                     ),
                   ],
-                )
+                ),
+                const SizedBox(height: 16.0,),
+                Text(progress,),
               ],
             ),
           ),
