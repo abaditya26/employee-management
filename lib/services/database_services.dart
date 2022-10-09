@@ -2,12 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:employee_management/models/task_model.dart';
 import 'package:employee_management/models/user_model.dart';
 import 'package:employee_management/services/auth_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 
 class DatabaseServices {
   final _db = FirebaseFirestore.instance;
-  addUserData(UserModel user) {
+  Future<void> addUserData(UserModel user) {
     return _db.collection("users").doc(user.uid).set(user.toMap());
   }
 
@@ -28,12 +26,8 @@ class DatabaseServices {
         .doc(task.uid)
         .collection("tasks")
         .add(task.toMap());
-    return _db
-        .collection("users")
-        .doc(task.uid)
-        .collection("tasks")
-        .doc(ref.id)
-        .update({"id": ref.id});
+    return _db.collection("users").doc(task.uid).collection("tasks").doc(ref.id).update(
+        {"id":ref.id});
   }
 
   Future<UserModel> getUserData() async {

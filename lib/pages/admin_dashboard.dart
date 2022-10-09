@@ -45,14 +45,13 @@ class _admin_dashboardState extends State<admin_dashboard> {
         elevation: 8,
         child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
-
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
               width: double.infinity,
-              height: 210,
+              height: 225,
               decoration: const BoxDecoration(
                 color: Color(0xFF14181B),
                 boxShadow: [
@@ -69,10 +68,10 @@ class _admin_dashboardState extends State<admin_dashboard> {
                 children: [
                   Padding(
                     padding:
-                    const EdgeInsetsDirectional.fromSTEB(24, 60, 24, 8),
+                        const EdgeInsetsDirectional.fromSTEB(24, 60, 24, 8),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
+
                       children: [
                         Text(
                           'Dashboard',
@@ -82,6 +81,10 @@ class _admin_dashboardState extends State<admin_dashboard> {
                             fontSize: 24,
                           ),
                         ),
+                        const Spacer(),
+                        IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.people_alt_outlined))
                       ],
                     ),
                   ),
@@ -104,7 +107,7 @@ class _admin_dashboardState extends State<admin_dashboard> {
                   ),
                   Padding(
                     padding:
-                    const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                        const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
                     child: Container(
                       width: double.infinity,
                       height: 60,
@@ -182,34 +185,34 @@ class _admin_dashboardState extends State<admin_dashboard> {
                                 0, 0, 8, 0),
                             child: _isLoading
                                 ? const Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  25, 12, 25, 12),
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            )
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        25, 12, 25, 12),
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  )
                                 : ElevatedButton(
-                              onPressed: () {
-                                print('Search button pressed');
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  shape: const StadiumBorder(),
-                                  backgroundColor:
-                                  const Color(0xFF4B39EF)),
-                              child: const Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    10, 12, 10, 12),
-                                child: FittedBox(
-                                  child: Text(
-                                    'Search',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white70,
+                                    onPressed: () {
+                                      print('Search button pressed');
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        shape: const StadiumBorder(),
+                                        backgroundColor:
+                                            const Color(0xFF4B39EF)),
+                                    child: const Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          10, 12, 10, 12),
+                                      child: FittedBox(
+                                        child: Text(
+                                          'Search',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ),
                           ),
                         ],
                       ),

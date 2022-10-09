@@ -1,7 +1,7 @@
-// import '../flutter_flow/flutter_flow_drop_down.dart';
-// import '../flutter_flow/flutter_flow_theme.dart';
-// import '../flutter_flow/flutter_flow_util.dart';
 import 'package:easy_debounce/easy_debounce.dart';
+import 'package:employee_management/models/user_model.dart';
+import 'package:employee_management/services/auth_services.dart';
+import 'package:employee_management/services/database_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,37 +16,70 @@ class add_employee_page extends StatefulWidget {
 
 class _add_employee_pageState extends State<add_employee_page> {
   String? dropDownValue;
-  TextEditingController? _empolyeename;
-  TextEditingController? _empolyeeemail;
-  TextEditingController? _empolyeenumber;
-  TextEditingController? _empolyeepassword;
+  final _empolyeename = TextEditingController();
+  final _empolyeeemail = TextEditingController();
+  final _empolyeenumber = TextEditingController();
   final _startDate = TextEditingController();
   bool _isLoading = false;
-  List<String> items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
-  String? selectedItem = 'Item 1';
-
+  List<String> items = ['Select Department', 'Marketing', 'Sales', 'Production', 'R&D'];
+  String selectedItem = 'Select Department';
 
   late bool passwordVisibility;
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  @override
-  void initState() {
-    super.initState();
-    _empolyeename = TextEditingController();
-    _empolyeeemail = TextEditingController();
-    _empolyeenumber = TextEditingController();
-    _empolyeepassword = TextEditingController();
-    passwordVisibility = false;
+  saveData() {
+    if(!formKey.currentState!.validate()){
+      return;
+    }
+    UserModel user = UserModel(
+        uid: "",
+        email: _empolyeeemail.text,
+        name: _empolyeename.text,
+        contactNo: _empolyeenumber.text,
+        department: selectedItem,
+        joiningDate: _startDate.text,
+        profileImage: "default");
+    setState(() {
+      _isLoading = true;
+    });
+    //create user in auth
+    AuthServices().createUserWithEmail(user.email).then((credentials) {
+      try {
+        user.uid = credentials.user!.uid;
+        // add user
+        DatabaseServices().addUserData(user).then((value) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("User Added")));
+          Navigator.pop(context);
+        }).catchError((e) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Error :- $e")));
+          setState(() {
+            _isLoading = false;
+          });
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Error :- $e")));
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }).catchError((e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error :- $e")));
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 
   @override
-  void dispose() {
-    _empolyeepassword?.dispose();
-    _empolyeenumber?.dispose();
-    _empolyeeemail?.dispose();
-    _empolyeename?.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    passwordVisibility = false;
+    selectedItem=items[0];
   }
 
   @override
@@ -69,8 +102,6 @@ class _add_employee_pageState extends State<add_employee_page> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
-
-
         elevation: 0,
       ),
       body: SafeArea(
@@ -78,7 +109,6 @@ class _add_employee_pageState extends State<add_employee_page> {
           padding: const EdgeInsetsDirectional.fromSTEB(25, 25, 25, 25),
           child: Form(
             key: formKey,
-            autovalidateMode: AutovalidateMode.disabled,
             child: SingleChildScrollView(
               child: GestureDetector(
                 onTap: () => FocusScope.of(context).unfocus(),
@@ -95,13 +125,13 @@ class _add_employee_pageState extends State<add_employee_page> {
                             padding: const EdgeInsets.all(8.0),
                             child: TextFormField(
                               keyboardType: TextInputType.name,
-
                               controller: _empolyeename,
                               validator: (value) {
                                 return value != null
-                                    ? RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$").hasMatch(value)
-                                    ? null
-                                    : "Enter valid name"
+                                    ? RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$")
+                                            .hasMatch(value)
+                                        ? null
+                                        : "Enter valid name"
                                     : "Name required";
                               },
                               obscureText: false,
@@ -149,8 +179,8 @@ class _add_employee_pageState extends State<add_employee_page> {
                                 filled: true,
                                 fillColor: const Color(0xFFFFFFFF),
                                 contentPadding:
-                                const EdgeInsetsDirectional.fromSTEB(
-                                    16, 24, 0, 24),
+                                    const EdgeInsetsDirectional.fromSTEB(
+                                        16, 24, 0, 24),
                                 prefixIcon: const Icon(Icons.people),
                               ),
                               style: GoogleFonts.urbanist(
@@ -172,13 +202,12 @@ class _add_employee_pageState extends State<add_employee_page> {
                             child: TextFormField(
                               controller: _empolyeeemail,
                               keyboardType: TextInputType.emailAddress,
-
                               validator: (value) {
                                 return value != null
                                     ? RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                    .hasMatch(value)
-                                    ? null
-                                    : "Enter valid email"
+                                            .hasMatch(value)
+                                        ? null
+                                        : "Enter valid email"
                                     : "Email required";
                               },
                               obscureText: false,
@@ -226,8 +255,8 @@ class _add_employee_pageState extends State<add_employee_page> {
                                 filled: true,
                                 fillColor: const Color(0xFFFFFFFF),
                                 contentPadding:
-                                const EdgeInsetsDirectional.fromSTEB(
-                                    16, 24, 0, 24),
+                                    const EdgeInsetsDirectional.fromSTEB(
+                                        16, 24, 0, 24),
                                 prefixIcon: const Icon(Icons.email),
                               ),
                               style: GoogleFonts.urbanist(
@@ -255,9 +284,9 @@ class _add_employee_pageState extends State<add_employee_page> {
                               validator: (value) {
                                 return value != null
                                     ? RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]')
-                                    .hasMatch(value)
-                                    ? null
-                                    : "Enter valid Contact-Number"
+                                            .hasMatch(value)
+                                        ? null
+                                        : "Enter valid Contact-Number"
                                     : "Contact-number required";
                               },
                               obscureText: false,
@@ -305,8 +334,8 @@ class _add_employee_pageState extends State<add_employee_page> {
                                 filled: true,
                                 fillColor: const Color(0xFFFFFFFF),
                                 contentPadding:
-                                const EdgeInsetsDirectional.fromSTEB(
-                                    16, 24, 0, 24),
+                                    const EdgeInsetsDirectional.fromSTEB(
+                                        16, 24, 0, 24),
                                 prefixIcon: const Icon(Icons.phone),
                               ),
                               style: GoogleFonts.urbanist(
@@ -322,11 +351,9 @@ class _add_employee_pageState extends State<add_employee_page> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: DropdownButtonFormField<String>(
-
                         decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-
                             borderSide: const BorderSide(
                                 width: 3, color: Color(0xFFF1F4F8)),
                           ),
@@ -335,13 +362,13 @@ class _add_employee_pageState extends State<add_employee_page> {
                         value: selectedItem,
                         items: items
                             .map((item) => DropdownMenuItem<String>(
-                          value: item,
-                          child: Text(item,
-                              style: const TextStyle(fontSize: 14)),
-                        ))
+                                  value: item,
+                                  child: Text(item,
+                                      style: const TextStyle(fontSize: 14)),
+                                ))
                             .toList(),
                         onChanged: (item) =>
-                            setState(() => selectedItem = item),
+                            setState(() => selectedItem = item ?? items[0]),
                       ),
                     ),
                     Padding(
@@ -359,8 +386,7 @@ class _add_employee_pageState extends State<add_employee_page> {
                           String datetime = "${dt.year}-${dt.month}-${dt.day}";
 
                           final now = DateTime.now();
-                          String dtNow =
-                              "${now.year}-${now.month}-${now.day}";
+                          String dtNow = "${now.year}-${now.month}-${now.day}";
                           if (dtNow.compareTo(datetime) < 0) {
                             showDialog(
                               context: context,
@@ -392,7 +418,7 @@ class _add_employee_pageState extends State<add_employee_page> {
                                   fontWeight: FontWeight.w500,
                                   fontSize: 14,
                                 ),
-                                hintText: 'Enter Start Time here...',
+                                hintText: 'Enter Joining Date here...',
                                 hintStyle: GoogleFonts.urbanist(
                                   color: const Color(0xFF95A1AC),
                                   fontWeight: FontWeight.w500,
@@ -436,9 +462,9 @@ class _add_employee_pageState extends State<add_employee_page> {
                                 filled: true,
                                 fillColor: const Color(0xFFFFFFFF),
                                 contentPadding:
-                                const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
-                                prefixIcon: const Icon(Icons.date_range)
-                            ),
+                                    const EdgeInsetsDirectional.fromSTEB(
+                                        16, 24, 0, 24),
+                                prefixIcon: const Icon(Icons.date_range)),
                             style: GoogleFonts.urbanist(
                               color: const Color(0xFF14181B),
                               fontWeight: FontWeight.w600,
@@ -447,129 +473,40 @@ class _add_employee_pageState extends State<add_employee_page> {
                       ),
                     ),
                     Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                              keyboardType: TextInputType.visiblePassword,
-
-                              controller: _empolyeepassword,
-                              validator: (value) {
-                                return value != null
-                                    ? value.length >= 6
-                                    ? null
-                                    : value.isEmpty
-                                    ? "Enter Password"
-                                    : "Minimum password length is 6"
-                                    : "Enter Password";
-                              },
-                              obscureText: !passwordVisibility,
-                              decoration: InputDecoration(
-                                labelText: 'Password',
-                                labelStyle: GoogleFonts.urbanist(
-                                  color: const Color(0xFF95A1AC),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                ),
-                                hintText: 'Enter your password here...',
-                                hintStyle: GoogleFonts.urbanist(
-                                  color: const Color(0xFF95A1AC),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0xFFE1EDF9),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0xFFE1EDF9),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                filled: true,
-                                fillColor: const Color(0xFFFFFFFF),
-                                contentPadding:
-                                const EdgeInsetsDirectional.fromSTEB(
-                                    16, 24, 24, 24),
-                                suffixIcon: InkWell(
-                                  onTap: () => setState(
-                                        () => passwordVisibility =
-                                    !passwordVisibility,
-                                  ),
-                                  focusNode: FocusNode(skipTraversal: true),
-                                  child: Icon(
-                                    passwordVisibility
-                                        ? Icons.visibility_outlined
-                                        : Icons.visibility_off_outlined,
-                                    color: const Color(0xFF95A1AC),
-                                    size: 22,
-                                  ),
-                                ),
-                                prefixIcon: const Icon(Icons.password),
-                              ),
-                              style: GoogleFonts.urbanist(
-                                color: const Color(0xFF14181B),
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
                       children: [
                         const Spacer(),
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 4, 0),
+                          padding:
+                              const EdgeInsetsDirectional.fromSTEB(0, 10, 4, 0),
                           child: _isLoading
                               ? const Padding(
-                            padding:
-                            EdgeInsetsDirectional.fromSTEB(25, 12, 25, 12),
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          )
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      25, 12, 25, 12),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                )
                               : ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                                shape: const StadiumBorder(),
-                                backgroundColor: const Color(0xFF4B39EF)),
-                            child: const Padding(
-                              padding:
-                              EdgeInsetsDirectional.fromSTEB(25, 12, 25, 12),
-                              child: FittedBox(
-                                child: Text(
-                                  'Add Employee',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.white70,
+                                  onPressed: () {
+                                    saveData();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      shape: const StadiumBorder(),
+                                      backgroundColor: const Color(0xFF4B39EF)),
+                                  child: const Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        25, 12, 25, 12),
+                                    child: FittedBox(
+                                      child: Text(
+                                        'Add Employee',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white70,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ),
                         ),
                       ],
                     )

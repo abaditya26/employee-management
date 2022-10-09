@@ -11,6 +11,9 @@ class AuthServices {
   Future<UserCredential> signInWithEmail(String email, String password) {
     return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
+  Future<UserCredential> createUserWithEmail(String email, ) {
+    return _auth.createUserWithEmailAndPassword(email: email, password: email);
+  }
 
   Future<String> isUserLoggedIn(BuildContext context) async {
     try {
