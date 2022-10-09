@@ -4,6 +4,8 @@ import 'package:employee_management/services/database_services.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'input_border.dart';
+
 class AddTaskWidget extends StatefulWidget {
   const AddTaskWidget({Key? key}) : super(key: key);
 
@@ -62,7 +64,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
         setState(() {
           _isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Task Added")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Task Added")));
         Navigator.pop(context);
       });
     }
@@ -115,34 +118,10 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0xFFE1EDF9),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0xFFE1EDF9),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    enabledBorder: inputBorder(const Color(0xFFE1EDF9)),
+                    focusedBorder: inputBorder(const Color(0xFFE1EDF9)),
+                    errorBorder: inputBorder(const Color(0x00000000)),
+                    focusedErrorBorder: inputBorder(const Color(0x00000000)),
                     filled: true,
                     fillColor: const Color(0xFFFFFFFF),
                     contentPadding:

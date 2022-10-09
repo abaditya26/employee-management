@@ -45,4 +45,8 @@ class AuthServices {
   String getUid(){
     return _auth.currentUser!.uid;
   }
+
+  Future<void> changePassword(String newPassword){
+    return _auth.currentUser!.updatePassword(newPassword);
+  }
 }
