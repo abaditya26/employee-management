@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'add_employee.dart';
 
 class admin_dashboard extends StatefulWidget {
   const admin_dashboard({Key? key}) : super(key: key);
@@ -31,20 +32,27 @@ class _admin_dashboardState extends State<admin_dashboard> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: const Color(0xFFF1F4F8),
-      floatingActionButton: FloatingActionButton(onPressed: (){},
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => add_employee_page(),
+            ),
+          );
+        },
         backgroundColor: const Color(0xFF4B39EF),
         elevation: 8,
-        child: const Icon(Icons.add,
-            color: Colors.white,
-            size: 28),
+        child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
+
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
               width: double.infinity,
-              height: 190,
+              height: 210,
               decoration: const BoxDecoration(
                 color: Color(0xFF14181B),
                 boxShadow: [
@@ -61,13 +69,13 @@ class _admin_dashboardState extends State<admin_dashboard> {
                 children: [
                   Padding(
                     padding:
-                        const EdgeInsetsDirectional.fromSTEB(24, 40, 24, 8),
+                    const EdgeInsetsDirectional.fromSTEB(24, 60, 24, 8),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          'Welcome!',
+                          'Dashboard',
                           style: GoogleFonts.urbanist(
                             color: const Color(0xFFFFFFFF),
                             fontWeight: FontWeight.w600,
@@ -96,7 +104,7 @@ class _admin_dashboardState extends State<admin_dashboard> {
                   ),
                   Padding(
                     padding:
-                        const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                    const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
                     child: Container(
                       width: double.infinity,
                       height: 60,
@@ -116,8 +124,14 @@ class _admin_dashboardState extends State<admin_dashboard> {
                                 controller: textController,
                                 obscureText: false,
                                 decoration: InputDecoration(
-                                  labelText: 'Employee name...',
+                                  labelText: 'Employee name',
                                   labelStyle: GoogleFonts.urbanist(
+                                    color: const Color(0xFF95A1AC),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
+                                  hintText: 'Enter employee name here...',
+                                  hintStyle: GoogleFonts.urbanist(
                                     color: const Color(0xFF95A1AC),
                                     fontWeight: FontWeight.w500,
                                     fontSize: 14,
@@ -164,7 +178,8 @@ class _admin_dashboardState extends State<admin_dashboard> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 8, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 0, 8, 0),
                             child: _isLoading
                                 ? const Padding(
                               padding: EdgeInsetsDirectional.fromSTEB(
@@ -182,8 +197,7 @@ class _admin_dashboardState extends State<admin_dashboard> {
                                   backgroundColor:
                                   const Color(0xFF4B39EF)),
                               child: const Padding(
-                                padding:
-                                EdgeInsetsDirectional.fromSTEB(
+                                padding: EdgeInsetsDirectional.fromSTEB(
                                     10, 12, 10, 12),
                                 child: FittedBox(
                                   child: Text(
@@ -196,8 +210,6 @@ class _admin_dashboardState extends State<admin_dashboard> {
                                 ),
                               ),
                             ),
-
-
                           ),
                         ],
                       ),
@@ -299,11 +311,8 @@ class _admin_dashboardState extends State<admin_dashboard> {
             //     },
             //   ),
             // ),
-
           ],
-
         ),
-
       ),
     );
   }
