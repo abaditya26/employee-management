@@ -111,22 +111,22 @@ class _UserDashboardState extends State<UserDashboard> {
                           const Spacer(),
                           IconButton(
                               onPressed: () {
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) => UserProfile(
-                                //               user: user!,
-                                //             ))).then((value) {
-                                //   getUserData();
-                                // });
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => EditProfileWidget(
-
+                                        builder: (context) => UserProfile(
+                                              user: user!,
                                             ))).then((value) {
                                   getUserData();
                                 });
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => EditProfileWidget(
+                                //
+                                //             ))).then((value) {
+                                //   getUserData();
+                                // });
                               },
                               icon: const Hero(
                                   tag: "user_profile_button",
