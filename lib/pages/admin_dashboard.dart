@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:employee_management/pages/user_profile.dart';
 import 'package:employee_management/services/database_services.dart';
+import 'package:employee_management/widgets/user_dash_graph_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -309,7 +310,14 @@ class _admin_dashboardState extends State<admin_dashboard> {
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
-                          //TODO:open user details
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserDashGraphsWidget(
+                                        uid: users[index].uid,
+                                        // isAdmin : true,
+                                        user: users[index],
+                                      )));
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
