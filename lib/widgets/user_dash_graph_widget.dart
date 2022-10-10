@@ -144,13 +144,15 @@ class _UserDashGraphsWidgetState extends State<UserDashGraphsWidget> {
                 ];
                 int i = 0;
                 var dTH = todayDate.subtract(const Duration(days: 7));
+                print(dTH);
                 for (DocumentSnapshot document in snapshot.data!.docs) {
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
-                  DateTime d1 = DateFormat("yyyy-MM-dd").parse((data["startDateTime"] as String).split(" ")[0]);
-                  DateTime d2 =
-                      DateFormat("yyyy-MM-dd").parse("${dTH.year}-${dTH.month}-${dTH.day}");
-                  if (d1.isAfter(d2)) {
+                  DateTime d1 = DateFormat("yyyy-MM-dd")
+                      .parse((data["startDateTime"] as String).split(" ")[0]);
+                  DateTime d2 = DateFormat("yyyy-MM-dd")
+                      .parse("${dTH.year}-${dTH.month}-${dTH.day}");
+                  if (d1.isAfter(d2) &&( (todayDate.add(const Duration(days: 1))).isAfter(d1))) {
                     for (i = 0; i < tasks.length; i++) {
                       if (tasks[i].date ==
                           (data["startDateTime"] as String).split(" ")[0]) {
@@ -181,10 +183,10 @@ class _UserDashGraphsWidgetState extends State<UserDashGraphsWidget> {
                     i--;
                   }
                 }
-                print(tasks.length);
-                for (TaskDataModel t in tasks) {
-                  print("${t.date}");
-                }
+                // print(tasks.length);
+                // for (TaskDataModel t in tasks) {
+                //   print("${t.date}");
+                // }
                 return SingleChildScrollView(
                   child: Column(
                     children: [
@@ -254,8 +256,9 @@ class PieChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Map<String, double> dataMap = {};
     Map<String, double> dataMap2 = {};
-    if (tasks.length == 0) {
+    if (tasks.isEmpty) {
       return Container(
+        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
         child: Text("No Data Found for last 7 days"),
       );
     }
