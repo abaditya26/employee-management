@@ -64,7 +64,9 @@ class DatabaseServices {
         contactNo: snap["contactNo"],
         department: snap["department"],
         joiningDate: snap["joiningDate"],
-        profileImage: snap["profileImage"]);
+        profileImage: snap["profileImage"],
+        role: snap["role"],
+        isActive: snap["isActive"],);
   }
 
   Future<void> updateUserData(UserModel user) async {
@@ -79,5 +81,9 @@ class DatabaseServices {
         .collection("tasks")
         .orderBy("startDateTime")
         .snapshots();
+  }
+
+  Stream<QuerySnapshot> getUsers(){
+    return _db.collection("users").orderBy("name").snapshots();
   }
 }
