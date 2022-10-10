@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-OutlineInputBorder inputBorder(Color color){
+OutlineInputBorder inputBorder(Color color) {
   return OutlineInputBorder(
     borderSide: BorderSide(
       color: color,

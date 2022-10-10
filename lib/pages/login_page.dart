@@ -1,13 +1,15 @@
 import 'package:employee_management/pages/user_dashboard.dart';
 import 'package:employee_management/services/auth_services.dart';
 import 'package:employee_management/services/database_services.dart';
-import 'admin_dashboard.dart';
-import '../../main.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'admin_dashboard.dart';
+
 class LoginWidget extends StatefulWidget {
-  const LoginWidget({Key? key}) : super(key: key);
+  String? errMessage;
+
+  LoginWidget({super.key, this.errMessage});
 
   @override
   _LoginWidgetState createState() => _LoginWidgetState();
@@ -45,8 +47,15 @@ class _LoginWidgetState extends State<LoginWidget> {
           .then((credentials) {
         try {
           String uid = credentials.user!.uid;
-          _db.isUserAdmin(uid).then((value) {
-            if (value) {
+          _db.validateUser(uid).then((value) {
+            if (value["active"] == false) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("User is disabled. Please Contact Admin.")));
+              _authServices.signOutUser(
+                  context, "User is disabled. Please Contact Admin.");
+              return;
+            }
+            if (value["admin"]) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -98,7 +107,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       backgroundColor: const Color(0xFF4B39EF),
       body: Container(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 1,
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           color: const Color(0xFFFFFFFF),
           image: DecorationImage(
@@ -109,7 +118,6 @@ class _LoginWidgetState extends State<LoginWidget> {
           ),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
           children: [
             Container(
               width: double.infinity,
@@ -370,6 +378,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       )
                                     : ElevatedButton(
                                         onPressed: () {
+                                          if (widget.errMessage != null) {
+                                            widget.errMessage = "";
+                                          }
                                           signIn();
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -395,6 +406,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                             ],
                           ),
                         ),
+                        Text(widget.errMessage ?? ""),
                       ],
                     ),
                   ),

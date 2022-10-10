@@ -1,4 +1,4 @@
-class TaskModel{
+class TaskModel {
   String id, uid;
   final String taskTitle, taskType, startDateTime, duration;
 
@@ -10,14 +10,14 @@ class TaskModel{
       required this.startDateTime,
       required this.duration});
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     return {
-      "id":id,
-      "uid":uid,
-      "taskTitle":taskTitle,
-      "taskType":taskType,
-      "startDateTime":startDateTime,
-      "duration":duration,
+      "id": id,
+      "uid": uid,
+      "taskTitle": taskTitle,
+      "taskType": taskType,
+      "startDateTime": startDateTime,
+      "duration": duration,
     };
   }
 }

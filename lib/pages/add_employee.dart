@@ -19,7 +19,13 @@ class _add_employee_pageState extends State<add_employee_page> {
   final _empolyeenumber = TextEditingController();
   final _startDate = TextEditingController();
   bool _isLoading = false;
-  List<String> items = ['Select Department', 'Marketing', 'Sales', 'Production', 'R&D'];
+  List<String> items = [
+    'Select Department',
+    'Marketing',
+    'Sales',
+    'Production',
+    'R&D'
+  ];
   String selectedItem = 'Select Department';
 
   late bool passwordVisibility;
@@ -27,7 +33,7 @@ class _add_employee_pageState extends State<add_employee_page> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   saveData() {
-    if(!formKey.currentState!.validate()){
+    if (!formKey.currentState!.validate()) {
       return;
     }
     UserModel user = UserModel(
@@ -77,7 +83,7 @@ class _add_employee_pageState extends State<add_employee_page> {
   void initState() {
     super.initState();
     passwordVisibility = false;
-    selectedItem=items[0];
+    selectedItem = items[0];
   }
 
   @override

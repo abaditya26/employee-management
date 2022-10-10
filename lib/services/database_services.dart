@@ -5,19 +5,39 @@ import 'package:employee_management/services/auth_services.dart';
 
 class DatabaseServices {
   final _db = FirebaseFirestore.instance;
+
   Future<void> addUserData(UserModel user) {
     return _db.collection("users").doc(user.uid).set(user.toMap());
   }
 
-  Future<bool> isUserAdmin(String uid) async {
+  Future<Map<String, dynamic>> validateUser(String uid) async {
     DocumentSnapshot documentSnapshot =
         await _db.collection("users").doc(uid).get();
     if (documentSnapshot.exists) {
       if (documentSnapshot.get("role") == "admin") {
-        return true;
+        print(documentSnapshot.get("isActive"));
+        try {
+          if (documentSnapshot.get("isActive") == true) {
+            return {"admin": true, "active": true};
+          } else {
+            return {"admin": true, "active": false};
+          }
+        } catch (e) {
+          return {"admin": true, "active": true};
+        }
+      } else {
+        try {
+          if (documentSnapshot.get("isActive") == true) {
+            return {"admin": false, "active": true};
+          } else {
+            return {"admin": false, "active": false};
+          }
+        } catch (e) {
+          return {"admin": false, "active": true};
+        }
       }
     }
-    return false;
+    return {};
   }
 
   Future<void> saveTask(TaskModel task) async {
@@ -26,8 +46,12 @@ class DatabaseServices {
         .doc(task.uid)
         .collection("tasks")
         .add(task.toMap());
-    return _db.collection("users").doc(task.uid).collection("tasks").doc(ref.id).update(
-        {"id":ref.id});
+    return _db
+        .collection("users")
+        .doc(task.uid)
+        .collection("tasks")
+        .doc(ref.id)
+        .update({"id": ref.id});
   }
 
   Future<UserModel> getUserData() async {
@@ -40,12 +64,20 @@ class DatabaseServices {
         contactNo: snap["contactNo"],
         department: snap["department"],
         joiningDate: snap["joiningDate"],
-        profileImage: snap["profileImage"]
-    );
+        profileImage: snap["profileImage"]);
   }
 
-
-  Future<void> updateUserData(UserModel user)async {
+  Future<void> updateUserData(UserModel user) async {
     return _db.collection("users").doc(user.uid).update(user.toMap());
+  }
+
+  Stream<QuerySnapshot> getTasks() {
+    String uid = AuthServices().getUid();
+    return _db
+        .collection("users")
+        .doc(uid)
+        .collection("tasks")
+        .orderBy("startDateTime")
+        .snapshots();
   }
 }

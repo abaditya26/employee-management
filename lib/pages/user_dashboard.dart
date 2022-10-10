@@ -8,8 +8,6 @@ import 'package:employee_management/widgets/user_dash_graph_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
-
 class UserDashboard extends StatefulWidget {
   const UserDashboard({Key? key}) : super(key: key);
 
@@ -21,6 +19,7 @@ class _UserDashboardState extends State<UserDashboard> {
   UserModel? user;
   bool _isLoading = true;
   final _db = DatabaseServices();
+
   @override
   void initState() {
     super.initState();
@@ -52,9 +51,7 @@ class _UserDashboardState extends State<UserDashboard> {
                     context: context,
                     builder: (context) {
                       return const AddTaskWidget();
-                    }).then((value) {
-                  //TODO:refresh the data
-                });
+                    });
               },
               backgroundColor: const Color(0xFF4B39EF),
               elevation: 8,
@@ -67,7 +64,7 @@ class _UserDashboardState extends State<UserDashboard> {
                   children: [
                     Padding(
                       padding:
-                          const EdgeInsetsDirectional.fromSTEB(20, 0, 16, 0),
+                          const EdgeInsetsDirectional.fromSTEB(20, 10, 16, 0),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,14 +93,15 @@ class _UserDashboardState extends State<UserDashboard> {
                                     shape: BoxShape.circle,
                                   ),
                                   child: CachedNetworkImage(
-                                      progressIndicatorBuilder: (context, url,
-                                              progress) =>
-                                          Center(
-                                            child: CircularProgressIndicator(
-                                              value: progress.progress,
-                                            ),
-                                          ),
-                                      imageUrl: user!.profileImage),
+                                    progressIndicatorBuilder:
+                                        (context, url, progress) => Center(
+                                      child: CircularProgressIndicator(
+                                        value: progress.progress,
+                                      ),
+                                    ),
+                                    imageUrl: user!.profileImage,
+                                    fit: BoxFit.fill,
+                                  ),
                                 ),
                               ),
                             ),
@@ -119,21 +117,13 @@ class _UserDashboardState extends State<UserDashboard> {
                                             ))).then((value) {
                                   getUserData();
                                 });
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) => EditProfileWidget(
-                                //
-                                //             ))).then((value) {
-                                //   getUserData();
-                                // });
                               },
                               icon: const Hero(
                                   tag: "user_profile_button",
                                   child: Icon(Icons.person_outline))),
                           IconButton(
                               onPressed: () {
-                                authServices.signOutUser(context);
+                                authServices.signOutUser(context, null);
                               },
                               icon: const Icon(
                                 Icons.exit_to_app,
@@ -184,7 +174,9 @@ class _UserDashboardState extends State<UserDashboard> {
                         ],
                       ),
                     ),
-                    UserDashGraphsWidget(),
+                    UserDashGraphsWidget(
+                      uid: user!.uid,
+                    ),
                   ],
                 ),
               ),

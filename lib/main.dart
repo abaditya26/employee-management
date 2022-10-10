@@ -3,6 +3,7 @@ import 'package:employee_management/pages/user_dashboard.dart';
 import 'package:employee_management/services/auth_services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
 import 'firebase_options.dart';
 import 'pages/login_page.dart';
 
@@ -15,7 +16,9 @@ Future<void> main() async {
 }
 
 class MainApp extends StatefulWidget {
-  MainApp({Key? key}) : super(key: key);
+  String? err;
+
+  MainApp({super.key, this.err});
 
   @override
   State<MainApp> createState() => _MainAppState();
@@ -29,8 +32,11 @@ class _MainAppState extends State<MainApp> {
   void initState() {
     super.initState();
     _auth.isUserLoggedIn(context).then((value) {
+      if ((value["message"] as String).isNotEmpty) {
+        widget.err = value["message"];
+      }
       setState(() {
-        user = value;
+        user = value["role"];
       });
     });
   }
@@ -39,7 +45,9 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: user == "false"
-          ? LoginWidget()
+          ? LoginWidget(
+              errMessage: widget.err,
+            )
           : user == "admin"
               ? admin_dashboard()
               : UserDashboard(),

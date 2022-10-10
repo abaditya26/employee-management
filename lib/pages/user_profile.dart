@@ -61,7 +61,7 @@ class _UserProfileState extends State<UserProfile> {
       //upload image and update image data
       _storage.updateProfileImage(image!, widget.user.uid, (p0) {
         setState(() {
-        progress = "Uploading :- $p0%";
+          progress = "Uploading :- $p0%";
         });
       }, updateUserData);
     }
@@ -253,7 +253,7 @@ class _UserProfileState extends State<UserProfile> {
                       Colors.black,
                     ),
                     backgroundColor: MaterialStateProperty.all(
-                      const Color(0xFFE7E7E7),
+                      const Color(0xFFF7F7F7),
                     ),
                   ),
                   child: const Text("Update Photo"),
@@ -625,8 +625,12 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.0,),
-                Text(progress,),
+                const SizedBox(
+                  height: 16.0,
+                ),
+                Text(
+                  progress,
+                ),
               ],
             ),
           ),

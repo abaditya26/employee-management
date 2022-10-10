@@ -69,7 +69,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '44799179143',
     projectId: 'employee-management-fc421',
     storageBucket: 'employee-management-fc421.appspot.com',
-    iosClientId: '44799179143-4nacm6j36vnnjdu8esi8tl9k422qi480.apps.googleusercontent.com',
+    iosClientId:
+        '44799179143-4nacm6j36vnnjdu8esi8tl9k422qi480.apps.googleusercontent.com',
     iosBundleId: 'in.adityabodhankar.employeeManagement',
   );
 }
