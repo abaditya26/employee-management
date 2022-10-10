@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'add_employee.dart';
-
+import 'admin_profile.dart';
 class admin_dashboard extends StatefulWidget {
   const admin_dashboard({Key? key}) : super(key: key);
 
@@ -29,6 +29,7 @@ class _admin_dashboardState extends State<admin_dashboard> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: const Color(0xFFF1F4F8),
@@ -37,7 +38,7 @@ class _admin_dashboardState extends State<admin_dashboard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => add_employee_page(),
+              builder: (context) => const add_employee_page(),
             ),
           );
         },
@@ -83,8 +84,16 @@ class _admin_dashboardState extends State<admin_dashboard> {
                         ),
                         const Spacer(),
                         IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.people_alt_outlined))
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ProfileScreenWidget(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.people_alt_outlined),
+                        color: Colors.white,)
                       ],
                     ),
                   ),
