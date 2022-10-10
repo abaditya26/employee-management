@@ -48,6 +48,8 @@ dependencies:
   flutter_animate: ^1.0.0
   font_awesome_flutter: ^10.2.1
   easy_debounce: ^2.0.2+1
+  flutter_charts:
+
 
 
 dev_dependencies:

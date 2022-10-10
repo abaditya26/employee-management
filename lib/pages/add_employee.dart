@@ -1,6 +1,7 @@
 import 'package:employee_management/models/user_model.dart';
 import 'package:employee_management/services/auth_services.dart';
 import 'package:employee_management/services/database_services.dart';
+import 'package:employee_management/widgets/user_createdd_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,6 +18,7 @@ class _add_employee_pageState extends State<add_employee_page> {
   final _empolyeename = TextEditingController();
   final _empolyeeemail = TextEditingController();
   final _empolyeenumber = TextEditingController();
+  final passwordController = TextEditingController();
   final _startDate = TextEditingController();
   bool _isLoading = false;
   List<String> items = [
@@ -31,6 +33,10 @@ class _add_employee_pageState extends State<add_employee_page> {
   late bool passwordVisibility;
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  BuildContext? ctx;
+  bool _isCreated =false;
+
+
 
   saveData() {
     if (!formKey.currentState!.validate()) {
@@ -44,39 +50,201 @@ class _add_employee_pageState extends State<add_employee_page> {
         department: selectedItem,
         joiningDate: _startDate.text,
         profileImage: "default");
-    setState(() {
-      _isLoading = true;
-    });
     //create user in auth
-    AuthServices().createUserWithEmail(user.email).then((credentials) {
-      try {
-        user.uid = credentials.user!.uid;
-        // add user
-        DatabaseServices().addUserData(user).then((value) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("User Added")));
-          Navigator.pop(context);
-        }).catchError((e) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Error :- $e")));
-          setState(() {
-            _isLoading = false;
-          });
+    //ask for confirmation by inputting user email address
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            padding: EdgeInsets.symmetric(
+              vertical: 14.0,
+              horizontal: 20.0,
+            ),
+            child: Column(
+              children: [
+                Text(
+                  "Please Confirm Your Password to add user",
+                  style: TextStyle(fontSize: 18.0),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: passwordController,
+                          validator: (value) {
+                            return value != null
+                                ? value.length >= 6
+                                    ? null
+                                    : value.isEmpty
+                                        ? "Enter Your Password"
+                                        : "Minimum password length is 6"
+                                : "Enter Password";
+                          },
+                          obscureText: !passwordVisibility,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            labelStyle: GoogleFonts.urbanist(
+                              color: const Color(0xFF95A1AC),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                            hintText: 'Enter your password here...',
+                            hintStyle: GoogleFonts.urbanist(
+                              color: const Color(0xFF95A1AC),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFE1EDF9),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFE1EDF9),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0x00000000),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0x00000000),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            filled: true,
+                            fillColor: const Color(0xFFFFFFFF),
+                            contentPadding:
+                                const EdgeInsetsDirectional.fromSTEB(
+                                    16, 24, 24, 24),
+                            suffixIcon: InkWell(
+                              onTap: () => setState(
+                                () => passwordVisibility = !passwordVisibility,
+                              ),
+                              focusNode: FocusNode(skipTraversal: true),
+                              child: Icon(
+                                passwordVisibility
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                                color: const Color(0xFF95A1AC),
+                                size: 22,
+                              ),
+                            ),
+                          ),
+                          style: GoogleFonts.urbanist(
+                            color: const Color(0xFF14181B),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20.0,),
+                _isLoading ? Center(child: CircularProgressIndicator(),) :ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    AuthServices()
+                        .createUserWithEmail(user.email, passwordController.text,)
+                        .then((data) {
+                      try {
+                        if(data["error"]){
+                          try{
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(data["err_msg"])));
+                          }catch(e1){
+                            print(data["err_msg"]);
+                          }
+                          return;
+                        }
+                        user.uid = data["uid"];
+                        // add user
+                        DatabaseServices().addUserData(user).then((value) {
+                          try {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(content: Text(
+                                "User Added")));
+                          }catch(e){
+                            print("Error:-$e");
+                          }
+                          setState(() {
+                            _isLoading = false;
+                            _isCreated = true;
+                          });
+                          Navigator.pop(context);
+                        }).catchError((e) {
+                          try {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(content: Text(
+                                "Error :- $e")));
+                          }catch(e){
+                            print("Error:-$e");
+                          }
+                          setState(() {
+                            _isLoading = false;
+                          });
+                        });
+                      } catch (e) {
+                        try {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text(
+                              "Error :- $e")));
+                        }catch(e){
+                          print("Error:-$e");
+                        }
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      }
+                    }).catchError((e) {
+                      try {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(
+                            "Error :- $e")));
+                      }catch(e){
+                        print("Error:-$e");
+                      }
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                      backgroundColor: const Color(0xFF4B39EF)),
+                  child: const Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(25, 12, 25, 12),
+                    child: FittedBox(
+                      child: Text(
+                        'Verify',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
         });
-      } catch (e) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Error :- $e")));
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }).catchError((e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Error :- $e")));
-      setState(() {
-        _isLoading = false;
-      });
-    });
   }
 
   @override
@@ -84,10 +252,12 @@ class _add_employee_pageState extends State<add_employee_page> {
     super.initState();
     passwordVisibility = false;
     selectedItem = items[0];
+    ctx = context;
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: const Color(0xFFF9F9F9),
@@ -108,7 +278,17 @@ class _add_employee_pageState extends State<add_employee_page> {
         ),
         elevation: 0,
       ),
-      body: SafeArea(
+      body: _isCreated ? SafeArea(
+        child: UserCreatedBtn(user:
+        UserModel(
+            uid: "",
+            email: _empolyeeemail.text,
+            name: _empolyeename.text,
+            contactNo: _empolyeenumber.text,
+            department: selectedItem,
+            joiningDate: _startDate.text,
+            profileImage: "default")),
+      ) : SafeArea(
         child: Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(25, 25, 25, 25),
           child: Form(

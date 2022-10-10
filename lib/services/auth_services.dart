@@ -12,10 +12,30 @@ class AuthServices {
     return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
-  Future<UserCredential> createUserWithEmail(
-    String email,
-  ) {
-    return _auth.createUserWithEmailAndPassword(email: email, password: email);
+  Future<Map<String, dynamic>> createUserWithEmail(
+    String uEmail,
+    String currentUserPass,
+  ) async {
+    String email = _auth.currentUser!.email!;
+    //verify user
+    try {
+      await signInWithEmail(email, currentUserPass);
+    } catch (e) {
+      return {"error": true, "uid": "", "err_msg": e};
+    }
+    try {
+      await _auth.createUserWithEmailAndPassword(email: uEmail, password: uEmail);
+    } catch (e) {
+      return {"error": true, "uid": "", "err_msg": e};
+    }
+    String uid = _auth.currentUser!.uid;
+    await _auth.signOut();
+    try {
+      await signInWithEmail(email, currentUserPass);
+      return {"error": false, "uid": uid, "err_msg": ""};
+    } catch (e) {
+      return {"error": true, "uid": "", "err_msg": e};
+    }
   }
 
   Future<Map<String, dynamic>> isUserLoggedIn(BuildContext context) async {

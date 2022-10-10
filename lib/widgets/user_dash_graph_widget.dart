@@ -4,6 +4,7 @@ import 'package:employee_management/models/task_data_model.dart';
 import 'package:employee_management/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 import '../services/database_services.dart';
 
@@ -38,15 +39,6 @@ class _UserDashGraphsWidgetState extends State<UserDashGraphsWidget> {
         children: [
           widget.user != null
               ? Container(
-                  // decoration: BoxDecoration(
-                  //   borderRadius: BorderRadius.circular(10.0),
-                  //   border: Border.all(color: Colors.black),
-                  // ),
-                  // margin: EdgeInsets.all(4.0),
-                  // padding: EdgeInsets.symmetric(
-                  //   vertical: 10.0,
-                  //   horizontal: 4.0,
-                  // ),
                   child: Row(
                     children: [
                       Expanded(
@@ -125,103 +117,180 @@ class _UserDashGraphsWidgetState extends State<UserDashGraphsWidget> {
             height: 1.0,
             color: Colors.black,
           ),
-          StreamBuilder<QuerySnapshot>(
-            stream: _db.getTasks(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: CircularProgressIndicator(
-                      color: Color(0xFF4B39EF),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _db.getTasks(widget.uid),
+
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF4B39EF),
+                      ),
                     ),
-                  ),
-                );
-              }
-              List<TaskDataModel> tasks = [
-                TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
-                TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
-                TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
-                TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
-                TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
-                TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
-                TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
-              ];
-              int i = 0;
-              var dTH = todayDate.subtract(const Duration(days: 7));
-              String dayTh = "${dTH.year}-${dTH.month}-${dTH.day}";
-              for (DocumentSnapshot document in snapshot.data!.docs) {
-                Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
-                if ((data["startDateTime"] as String)
-                        .split(" ")[0]
-                        .compareTo(dayTh) >
-                    0) {
-                  tasks[i].date =
-                      (data["startDateTime"] as String).split(" ")[0];
-                  if (data["taskType"] == "Break") {
-                    tasks[i].breaks++;
-                  } else if (data["taskType"] == "Meeting") {
-                    // todayMeeting++;
-                    tasks[i].meetings++;
-                  } else {
-                    // todayWorked++;
-                    tasks[i].worked++;
+                  );
+                }
+                List<TaskDataModel> tasks = [
+                  TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
+                  TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
+                  TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
+                  TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
+                  TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
+                  TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
+                  TaskDataModel(date: "", worked: 0, breaks: 0, meetings: 0),
+                ];
+                int i = 0;
+                var dTH = todayDate.subtract(const Duration(days: 7));
+                String dayTh = "${dTH.year}-${dTH.month}-${dTH.day}";
+                for (DocumentSnapshot document in snapshot.data!.docs) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
+                  if ((data["startDateTime"] as String)
+                          .split(" ")[0]
+                          .compareTo(dayTh) <=
+                      0) {
+                    for(i=0;i<tasks.length;i++){
+                      if(tasks[i].date == (data["startDateTime"] as String).split(" ")[0]){
+                        break;
+                      }
+                      if(tasks[i].date == ""){
+                        break;
+                      }
+                    }
+                    tasks[i].date =
+                        (data["startDateTime"] as String).split(" ")[0];
+                    if (data["taskType"] == "Break") {
+                      tasks[i].breaks++;
+                    } else if (data["taskType"] == "Meeting") {
+                      // todayMeeting++;
+                      tasks[i].meetings++;
+                    } else {
+                      // todayWorked++;
+                      tasks[i].worked++;
+                    }
+                    i++;
                   }
-                  i++;
                 }
-              }
-              for (int i = 0; i < tasks.length; i++) {
-                if (tasks[i].date.isEmpty) {
-                  tasks.remove(tasks[i]);
-                  i--;
+                for (int i = 0; i < tasks.length; i++) {
+                  if (tasks[i].date.isEmpty) {
+                    tasks.remove(tasks[i]);
+                    i--;
+                  }
                 }
-              }
-              return Column(
-                children: [
-                  Row(
+                return SingleChildScrollView(
+                  child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 22.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Schedules",
-                              style: TextStyle(fontSize: 18.0),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 22.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Schedules",
+                                  style: TextStyle(fontSize: 18.0),
+                                ),
+                                Text("$todayDate".split(" ")[0]),
+                              ],
                             ),
-                            Text("$todayDate".split(" ")[0]),
-                          ],
-                        ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            onPressed: () async {
+                              final dt = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000, 1, 1),
+                                  lastDate: DateTime.now());
+                              if (dt != null) {
+                                setState(() {
+                                  todayDate = dt;
+                                });
+                              }
+                            },
+                            icon: const Icon(Icons.calendar_month_outlined),
+                          ),
+                        ],
                       ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () async {
-                          final dt = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2000, 1, 1),
-                              lastDate: DateTime.now());
-                          if (dt != null) {
-                            setState(() {
-                              todayDate = dt;
-                            });
-                          }
-                        },
-                        icon: const Icon(Icons.calendar_month_outlined),
-                      ),
+                      //TODO:show charts
+                      PieChartWidget(tasks: tasks,),
                     ],
                   ),
-                  //TODO:show charts
-
-
-                ],
-              );
-            },
+                );
+              },
+            ),
           ),
         ],
       ),
+    );
+  }
+}
+
+
+class PieChartWidget extends StatelessWidget {
+
+  final List<TaskDataModel> tasks;
+
+  final colorList = <Color>[
+    const Color(0xfffdcb6e),
+    const Color(0xff0984e3),
+    const Color(0xfffd79a8),
+    const Color(0xffe17055),
+    const Color(0xff6c5ce7),
+  ];
+
+  PieChartWidget({super.key, required this.tasks});
+
+
+  @override
+  Widget build(BuildContext context) {
+    Map<String, double> dataMap = {};
+    Map<String, double> dataMap2 = {};
+    if(tasks.length == 0){
+      return Container(
+        child: Text("No Data Found for last 7 days"),
+      );
+    }
+    print(tasks[tasks.length-1].date);
+    dataMap["Breaks"] = tasks[0].breaks + 0.0;
+    dataMap["Meetings"] = tasks[0].meetings  + 0.0;
+    dataMap["Worked"] = tasks[0].worked  + 0.0;
+    if(tasks.length >= 2) {
+      dataMap2["Breaks"] = tasks[0].breaks + 0.0;
+      dataMap2["Meetings"] = tasks[0].meetings + 0.0;
+      dataMap2["Worked"] = tasks[0].worked + 0.0;
+    }
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: PieChart(
+            dataMap: dataMap,
+            chartType: ChartType.disc,
+            baseChartColor: Colors.grey[50]!.withOpacity(0.15),
+            colorList: colorList,
+            chartValuesOptions: const ChartValuesOptions(
+              showChartValuesInPercentage: true,
+            ),
+          ),
+        ),
+        tasks.length >= 2 ? Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: PieChart(
+            dataMap: dataMap2,
+            chartType: ChartType.disc,
+            baseChartColor: Colors.grey[50]!.withOpacity(0.15),
+            colorList: colorList,
+            chartValuesOptions: const ChartValuesOptions(
+              showChartValuesInPercentage: true,
+            ),
+          ),
+        ) : SizedBox(),
+      ],
     );
   }
 }

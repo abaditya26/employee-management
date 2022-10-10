@@ -73,8 +73,7 @@ class DatabaseServices {
     return _db.collection("users").doc(user.uid).update(user.toMap());
   }
 
-  Stream<QuerySnapshot> getTasks() {
-    String uid = AuthServices().getUid();
+  Stream<QuerySnapshot> getTasks(String uid) {
     return _db
         .collection("users")
         .doc(uid)
