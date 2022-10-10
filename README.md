@@ -12,7 +12,7 @@ A few resources to get you started if this is your first Flutter project:
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
 
-For Cloning project:-\
+## For Cloning project:-\
 Method 1
   Download Zip file\
   Extract Files\
