@@ -18,13 +18,13 @@ A few resources to get you started if this is your first Flutter project:
   Extract Files\
   Lib
 
-### Method2\
+### Method2
   From command line\
   cd repository_name\
   git clone https://github.com/abaditya26/employee-management.git
 
 
-Installation\
+Installation
   For running this peoject from terminal :-\
     cd project_name\
     Flutter run
@@ -33,7 +33,7 @@ Installation\
 
 
 Project
-  In this project the sections are created:-\
+  In this project the sections are created:-
   1. Login for admin and User(Single login page for User and Admin)\
      Using username with password form field\
      Login Page ( )\
@@ -45,12 +45,12 @@ Project
      
 
 
-   2.Admin can add employees from the add employees section:-\
+   2.Admin can add employees from the add employees section:-
      Add employee
 
  
  
-   3.Admin Dashboard:-\
+   3.Admin Dashboard:-
     Admin can see a list of all employees. When admin clicks on any employee
     name, both graphs (i.e pie chart & stacked bar chart) will be visible\
     Add Dashboard\
@@ -59,21 +59,21 @@ Project
 
 
 
-   4.User Section:-\
+   4.User Section:-
     employee can add tasks (activities that they have done in the whole day including
     breaks, meetings and work) with start time and timeline taken to complete the task.\
     User_Dashboard\
     User_Profile
 
-   5.Database:-\
+   5.Database:-
      Connecting Firebase to Flutter\
      https://firebase.google.com/docs/flutter/setup?platform=ios\
      FireStore Databese\
      Firebase Authentication
 
-Credits\
+### Credits
 
-License\
+### License
 
 
 
