@@ -12,8 +12,8 @@ A few resources to get you started if this is your first Flutter project:
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
 
-For Cloning project:-\n
-Method 1\n
+For Cloning project:-\
+Method 1
   Download Zip file\n
   Extract Files\n
   Lib\n\n
