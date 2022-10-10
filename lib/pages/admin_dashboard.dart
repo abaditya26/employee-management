@@ -36,8 +36,9 @@ Route _createRoute() {
 }
 
 class _admin_dashboardState extends State<admin_dashboard> {
-  TextEditingController? textController;
+  TextEditingController? textController = TextEditingController();
   bool _isLoading = false;
+  String filter = "";
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<UserModel> users = [];
@@ -45,7 +46,12 @@ class _admin_dashboardState extends State<admin_dashboard> {
   @override
   void initState() {
     super.initState();
-    textController = TextEditingController();
+  }
+
+  searchUser() {
+    setState(() {
+      filter = textController!.text;
+    });
   }
 
   @override
@@ -220,7 +226,7 @@ class _admin_dashboardState extends State<admin_dashboard> {
                                 )
                               : ElevatedButton(
                                   onPressed: () {
-                                    print('Search button pressed');
+                                    searchUser();
                                   },
                                   style: ElevatedButton.styleFrom(
                                       shape: const StadiumBorder(),
@@ -274,22 +280,35 @@ class _admin_dashboardState extends State<admin_dashboard> {
                     } catch (e) {
                       isActive = true;
                     }
-                    users.add(UserModel(
-                      uid: snap["uid"],
-                      email: snap["email"],
-                      name: snap["name"],
-                      contactNo: snap["contactNo"],
-                      department: snap["department"],
-                      joiningDate: snap["joiningDate"],
-                      profileImage: snap["profileImage"],
-                      role: snap["role"],
-                      isActive: isActive,
-                    ));
+                    if ((snap["email"] as String)
+                            .toLowerCase()
+                            .contains(filter.toLowerCase()) ||
+                        (snap["name"] as String)
+                            .toLowerCase()
+                            .contains(filter.toLowerCase()) ||
+                        (snap["department"] as String)
+                            .toLowerCase()
+                            .contains(filter.toLowerCase()) ||
+                        (snap["role"] as String)
+                            .toLowerCase()
+                            .contains(filter.toLowerCase())) {
+                      users.add(UserModel(
+                        uid: snap["uid"],
+                        email: snap["email"],
+                        name: snap["name"],
+                        contactNo: snap["contactNo"],
+                        department: snap["department"],
+                        joiningDate: snap["joiningDate"],
+                        profileImage: snap["profileImage"],
+                        role: snap["role"],
+                        isActive: isActive,
+                      ));
+                    }
                   }
                   return ListView.builder(
                     itemBuilder: (context, index) {
                       return InkWell(
-                        onTap: (){
+                        onTap: () {
                           //TODO:open user details
                         },
                         child: Container(
@@ -308,8 +327,9 @@ class _admin_dashboardState extends State<admin_dashboard> {
                                     )
                                   : CircleAvatar(
                                       radius: 30.0,
-                                      backgroundImage: CachedNetworkImageProvider(
-                                          users[index].profileImage),
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                              users[index].profileImage),
                                     ),
                               const SizedBox(
                                 width: 10.0,
@@ -318,7 +338,13 @@ class _admin_dashboardState extends State<admin_dashboard> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(users[index].name, style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18.0,),),
+                                    Text(
+                                      users[index].name,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
                                     Text(users[index].department),
                                   ],
                                 ),
