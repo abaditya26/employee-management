@@ -30,7 +30,6 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
       setState(() {
         user = value;
         email = value;
-
         _isLoading = false;
       });
     });
@@ -164,7 +163,6 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                                     ))).then((value) {
                           getUserData();
                         });
-                        print('Edit Profile Pressed');
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.9,

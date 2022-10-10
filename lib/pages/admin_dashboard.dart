@@ -5,7 +5,7 @@ import 'package:employee_management/services/database_services.dart';
 import 'package:employee_management/widgets/user_dash_graph_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:page_transition/page_transition.dart';
 import '../models/user_model.dart';
 import 'add_employee.dart';
 import 'admin_profile.dart';
@@ -68,7 +68,18 @@ class _admin_dashboardState extends State<admin_dashboard> {
       backgroundColor: const Color(0xFFF1F4F8),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(_createRoute());
+          Navigator.push(
+            context,
+            PageTransition(
+                alignment: Alignment.bottomCenter,
+                curve: Curves.easeInOut,
+                duration: const Duration(milliseconds: 300),
+                reverseDuration: const Duration(milliseconds: 300),
+                type: PageTransitionType.bottomToTop,
+                child: const add_employee_page(),
+                childCurrent: widget),
+          );
+          // Navigator.of(context).push(add_employee_page());
         },
         backgroundColor: const Color(0xFF4B39EF),
         elevation: 8,
@@ -111,32 +122,20 @@ class _admin_dashboardState extends State<admin_dashboard> {
                       IconButton(
                         onPressed: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ProfileScreenWidget(),
-                            ),
-                          );
+                              context,
+                              PageTransition(
+                                  alignment: Alignment.bottomCenter,
+                                  curve: Curves.easeInOut,
+                                  duration: const Duration(milliseconds: 350),
+                                  reverseDuration:
+                                      const Duration(milliseconds: 350),
+                                  type: PageTransitionType.rightToLeft,
+                                  child: const ProfileScreenWidget(),
+                                  childCurrent: widget));
                         },
-                        icon: const Icon(Icons.people_alt_outlined),
+                        icon: const Icon(Icons.person),
                         color: Colors.white,
                       )
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Find your Dream Space To Getaway',
-                        style: GoogleFonts.urbanist(
-                          color: const Color(0xFF95A1AC),
-                          fontWeight: FontWeight.w300,
-                          fontSize: 16,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -308,58 +307,69 @@ class _admin_dashboardState extends State<admin_dashboard> {
                   }
                   return ListView.builder(
                     itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => UserDashGraphsWidget(
-                                        uid: users[index].uid,
-                                        // isAdmin : true,
-                                        user: users[index],
-                                      )));
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6.0, horizontal: 10.0),
-                          child: Row(
-                            children: [
-                              users[index].profileImage == "default"
-                                  ? const CircleAvatar(
-                                      radius: 30.0,
-                                      child: Text(
-                                        "No Image found",
-                                        style: TextStyle(fontSize: 10.0),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    )
-                                  : CircleAvatar(
-                                      radius: 30.0,
-                                      backgroundImage:
-                                          CachedNetworkImageProvider(
-                                              users[index].profileImage),
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Material(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          UserDashGraphsWidget(
+                                            uid: users[index].uid,
+                                            // isAdmin : true,
+                                            user: users[index],
+                                          )));
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 6.0, horizontal: 10.0),
+                              child: Row(
+                                children: [
+                                  users[index].profileImage == "default"
+                                      ? const CircleAvatar(
+                                          radius: 30.0,
+                                          child: Text(
+                                            "No Image found",
+                                            style: TextStyle(fontSize: 10.0),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 30.0,
+                                          backgroundImage:
+                                              CachedNetworkImageProvider(
+                                                  users[index].profileImage),
+                                        ),
+                                  const SizedBox(
+                                    width: 10.0,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          users[index].name,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 18.0,
+                                          ),
+                                        ),
+                                        Text(users[index].department),
+                                      ],
                                     ),
-                              const SizedBox(
-                                width: 10.0,
+                                  ),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: const Icon(Icons.edit)),
+                                ],
                               ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      users[index].name,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                    Text(users[index].department),
-                                  ],
-                                ),
-                              ),
-                              IconButton(
-                                  onPressed: () {}, icon: Icon(Icons.edit)),
-                            ],
+                            ),
                           ),
                         ),
                       );

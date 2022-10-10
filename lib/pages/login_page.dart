@@ -3,7 +3,7 @@ import 'package:employee_management/services/auth_services.dart';
 import 'package:employee_management/services/database_services.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:page_transition/page_transition.dart';
 import 'admin_dashboard.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -56,12 +56,15 @@ class _LoginWidgetState extends State<LoginWidget> {
               return;
             }
             if (value["admin"]) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const admin_dashboard(),
-                ),
-              );
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.scale,
+                    alignment: Alignment.center,
+                    duration: const Duration(milliseconds: 500),
+                    child: const admin_dashboard(),
+                  ),
+                  (route) => false);
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Admin User Logged in")));
             } else {
@@ -69,9 +72,13 @@ class _LoginWidgetState extends State<LoginWidget> {
                   const SnackBar(content: Text("Employee logged in.")));
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const UserDashboard()),
-                  (route) => false);
+                  PageTransition(
+                    type: PageTransitionType.scale,
+                    alignment: Alignment.center,
+                    duration: const Duration(milliseconds: 500),
+                    child: const UserDashboard(),
+                  ),
+                      (route) => false);
             }
             setState(() {
               _isLoading = false;
