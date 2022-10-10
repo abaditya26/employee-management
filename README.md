@@ -12,8 +12,8 @@ A few resources to get you started if this is your first Flutter project:
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
 
-For Cloning project:-
-Method 1
+For Cloning project:-\n
+Method 1\n
   Download Zip file
   Extract Files
   Lib
@@ -37,8 +37,10 @@ Project
   1. Login for admin and User(Single login page for User and Admin)
      Using username with password form field
      Login Page ( )
-     Admin:-
-     User:-
+     Admin:-user@gmail.com
+     password:-user@gmail.com
+     User:-user@gmail.com
+     password:-user@gmail.com
      
      
 
