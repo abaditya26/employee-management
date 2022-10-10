@@ -67,7 +67,7 @@ Project
 
    5.Database:-
      Connecting Firebase to Flutter\
-     https://firebase.google.com/docs/flutter/setup?platform=ios\
+     https://firebase.google.com/docs/flutter/setup?platform=ios \
      FireStore Databese\
      Firebase Authentication
 
