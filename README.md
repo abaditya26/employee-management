@@ -14,21 +14,22 @@ A few resources to get you started if this is your first Flutter project:
 
 ##For Cloning project:-
   ##Method 1
-  *Download Zip file
-  *Extract Files
-  *Lib
+  Download Zip file
+  Extract Files
+  Lib
 
   ##Method2
   From command line
   cd repository_name
   git clone https://github.com/abaditya26/employee-management.git
 
-## Installation
+
+##Installation
 
 
   For running this peoject from terminal :-
-  *  cd command project_name
-  *  Flutter run
+    cd command project_name
+    Flutter run
 
 
 
@@ -38,15 +39,17 @@ A few resources to get you started if this is your first Flutter project:
   1. Login for admin and User(Single login page for User and Admin)
      Using username with password form field
      *Login Page ( )
+     Admin:-
+     
      
 
 
-  2.Admin can add employees from the add employees section. 
+  2.Admin can add employees from the add employees section:-
     *Add employee
 
  
  
- 3.Admin Dashboard 
+ 3.Admin Dashboard:-
     Admin can see a list of all employees. When admin clicks on any employee
     name, both graphs (i.e pie chart & stacked bar chart) will be visible
     *Add Dashboard
@@ -61,7 +64,7 @@ A few resources to get you started if this is your first Flutter project:
     *User_Dashboard
     *User_Profile
 
-
+   5.Database:-
 
 ## Credits
 
