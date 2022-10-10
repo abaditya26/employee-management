@@ -4,6 +4,7 @@ import 'package:employee_management/models/task_data_model.dart';
 import 'package:employee_management/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 import '../services/database_services.dart';
@@ -120,7 +121,6 @@ class _UserDashGraphsWidgetState extends State<UserDashGraphsWidget> {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _db.getTasks(widget.uid),
-
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(
@@ -144,22 +144,23 @@ class _UserDashGraphsWidgetState extends State<UserDashGraphsWidget> {
                 ];
                 int i = 0;
                 var dTH = todayDate.subtract(const Duration(days: 7));
-                String dayTh = "${dTH.year}-${dTH.month}-${dTH.day}";
                 for (DocumentSnapshot document in snapshot.data!.docs) {
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
-                  if ((data["startDateTime"] as String)
-                          .split(" ")[0]
-                          .compareTo(dayTh) <=
-                      0) {
-                    for(i=0;i<tasks.length;i++){
-                      if(tasks[i].date == (data["startDateTime"] as String).split(" ")[0]){
+                  DateTime d1 = DateFormat("yyyy-MM-dd").parse((data["startDateTime"] as String).split(" ")[0]);
+                  DateTime d2 =
+                      DateFormat("yyyy-MM-dd").parse("${dTH.year}-${dTH.month}-${dTH.day}");
+                  if (d1.isAfter(d2)) {
+                    for (i = 0; i < tasks.length; i++) {
+                      if (tasks[i].date ==
+                          (data["startDateTime"] as String).split(" ")[0]) {
                         break;
                       }
-                      if(tasks[i].date == ""){
+                      if (tasks[i].date == "") {
                         break;
                       }
                     }
+                    print("i $i");
                     tasks[i].date =
                         (data["startDateTime"] as String).split(" ")[0];
                     if (data["taskType"] == "Break") {
@@ -179,6 +180,10 @@ class _UserDashGraphsWidgetState extends State<UserDashGraphsWidget> {
                     tasks.remove(tasks[i]);
                     i--;
                   }
+                }
+                print(tasks.length);
+                for (TaskDataModel t in tasks) {
+                  print("${t.date}");
                 }
                 return SingleChildScrollView(
                   child: Column(
@@ -217,7 +222,9 @@ class _UserDashGraphsWidgetState extends State<UserDashGraphsWidget> {
                         ],
                       ),
                       //TODO:show charts
-                      PieChartWidget(tasks: tasks,),
+                      PieChartWidget(
+                        tasks: tasks,
+                      ),
                     ],
                   ),
                 );
@@ -230,9 +237,7 @@ class _UserDashGraphsWidgetState extends State<UserDashGraphsWidget> {
   }
 }
 
-
 class PieChartWidget extends StatelessWidget {
-
   final List<TaskDataModel> tasks;
 
   final colorList = <Color>[
@@ -245,24 +250,23 @@ class PieChartWidget extends StatelessWidget {
 
   PieChartWidget({super.key, required this.tasks});
 
-
   @override
   Widget build(BuildContext context) {
     Map<String, double> dataMap = {};
     Map<String, double> dataMap2 = {};
-    if(tasks.length == 0){
+    if (tasks.length == 0) {
       return Container(
         child: Text("No Data Found for last 7 days"),
       );
     }
-    print(tasks[tasks.length-1].date);
+
     dataMap["Breaks"] = tasks[0].breaks + 0.0;
-    dataMap["Meetings"] = tasks[0].meetings  + 0.0;
-    dataMap["Worked"] = tasks[0].worked  + 0.0;
-    if(tasks.length >= 2) {
-      dataMap2["Breaks"] = tasks[0].breaks + 0.0;
-      dataMap2["Meetings"] = tasks[0].meetings + 0.0;
-      dataMap2["Worked"] = tasks[0].worked + 0.0;
+    dataMap["Meetings"] = tasks[0].meetings + 0.0;
+    dataMap["Worked"] = tasks[0].worked + 0.0;
+    if (tasks.length >= 2) {
+      dataMap2["Breaks"] = tasks[1].breaks + 0.0;
+      dataMap2["Meetings"] = tasks[1].meetings + 0.0;
+      dataMap2["Worked"] = tasks[1].worked + 0.0;
     }
     return Column(
       children: [
@@ -278,18 +282,20 @@ class PieChartWidget extends StatelessWidget {
             ),
           ),
         ),
-        tasks.length >= 2 ? Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: PieChart(
-            dataMap: dataMap2,
-            chartType: ChartType.disc,
-            baseChartColor: Colors.grey[50]!.withOpacity(0.15),
-            colorList: colorList,
-            chartValuesOptions: const ChartValuesOptions(
-              showChartValuesInPercentage: true,
-            ),
-          ),
-        ) : SizedBox(),
+        tasks.length >= 2
+            ? Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: PieChart(
+                  dataMap: dataMap2,
+                  chartType: ChartType.disc,
+                  baseChartColor: Colors.grey[50]!.withOpacity(0.15),
+                  colorList: colorList,
+                  chartValuesOptions: const ChartValuesOptions(
+                    showChartValuesInPercentage: true,
+                  ),
+                ),
+              )
+            : SizedBox(),
       ],
     );
   }

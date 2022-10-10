@@ -37,8 +37,8 @@ Project
   1. Login for admin and User(Single login page for User and Admin)\
      Using username with password form field\
      Login Page ( )\
-     Admin:-user@gmail.com\
-     password:-user@gmail.com\
+     Admin:-admin@gmail.com\
+     password:-admin@gmail.com\
      User:-user@gmail.com\
      password:-user@gmail.com
      
