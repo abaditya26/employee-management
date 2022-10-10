@@ -2,11 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'add_employee.dart';
 import 'admin_profile.dart';
+import 'user_profile.dart';
 class admin_dashboard extends StatefulWidget {
   const admin_dashboard({Key? key}) : super(key: key);
 
   @override
   _admin_dashboardState createState() => _admin_dashboardState();
+}
+
+Route _createRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => const add_employee_page(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }
 
 class _admin_dashboardState extends State<admin_dashboard> {
@@ -35,12 +54,8 @@ class _admin_dashboardState extends State<admin_dashboard> {
       backgroundColor: const Color(0xFFF1F4F8),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const add_employee_page(),
-            ),
-          );
+         
+          Navigator.of(context).push(_createRoute());
         },
         backgroundColor: const Color(0xFF4B39EF),
         elevation: 8,
@@ -230,99 +245,132 @@ class _admin_dashboardState extends State<admin_dashboard> {
                 ],
               ),
             ),
-            // Generated code for this ListView Widget...
-            // Padding(
-            //   padding: EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
-            //   child: StreamBuilder<List<PropertiesRecord>>(
-            //     stream: queryPropertiesRecord(
-            //       queryBuilder: (propertiesRecord) =>
-            //           propertiesRecord.orderBy('lastUpdated', descending: true),
-            //     ),
-            //     builder: (context, snapshot) {
-            //       // Customize what your widget looks like when it's loading.
-            //       if (!snapshot.hasData) {
-            //         return const Center(
-            //           child: SizedBox(
-            //             width: 50,
-            //             height: 50,
-            //             child: CircularProgressIndicator(
-            //               color: Color(0xFF4B39EF),
-            //             ),
-            //           ),
-            //         );
-            //       }
-            //       List<PropertiesRecord> listViewPropertiesRecordList = snapshot.data!;
-            //       return ListView.builder(
-            //         padding: EdgeInsets.zero,
-            //         primary: false,
-            //         shrinkWrap: true,
-            //         scrollDirection: Axis.vertical,
-            //         itemCount: listViewPropertiesRecordList.length,
-            //         itemBuilder: (context, listViewIndex) {
-            //           final listViewPropertiesRecord =
-            //           listViewPropertiesRecordList[listViewIndex];
-            //           return Padding(
-            //             padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 12),
-            //             child: Container(
-            //               width: double.infinity,
-            //               decoration: BoxDecoration(
-            //                 color: const Color(0xFFFFFFFF),
-            //                 boxShadow: const [
-            //                   BoxShadow(
-            //                     blurRadius: 4,
-            //                     color: Color(0x32000000),
-            //                     offset: Offset(0, 2),
-            //                   )
-            //                 ],
-            //                 borderRadius: BorderRadius.circular(8),
-            //               ),
-            //               child: InkWell(
-            //                 onTap: () async {
-            //                   await Navigator.push(
-            //                     context,
-            //                     MaterialPageRoute(
-            //                       builder: (context) => PropertyDetailsWidget(
-            //                         propertyRef: listViewPropertiesRecord,
-            //                       ),
-            //                     ),
-            //                   );
-            //                 },
-            //                 child: Column(
-            //                   mainAxisSize: MainAxisSize.max,
-            //                   children: [
-            //                     Padding(
-            //                       padding: EdgeInsetsDirectional.fromSTEB(16, 16, 16, 16),
-            //                       child: Row(
-            //                         mainAxisSize: MainAxisSize.max,
-            //                         children: [
-            //                           Expanded(
-            //                             child: Text(
-            //                               listViewPropertiesRecord.propertyName!
-            //                                   .maybeHandleOverflow(
-            //                                 maxChars: 36,
-            //                                 replacement: '…',
-            //                               ),
-            //                               style: GoogleFonts.urbanist(
-            //
-            //                                 color: const Color(0xFF14181B),
-            //                                 fontWeight: FontWeight.bold,
-            //                                 fontSize: 20,
-            //                               ),
-            //                             ),
-            //                           ),
-            //                         ],
-            //                       ),
-            //                     ),
-            //                   ],
-            //                 ),
-            //               ),
-            //             ),
-            //           );
-            //         },
-            //       );
-            //     },
-            //   ),
-            // ),
+           // TODO add stream view for employee
+           // Generated code for this ListView Widget...
+           //  Padding(
+           //    padding: EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
+           //    child: StreamBuilder<List<PropertiesRecord>>(
+           //      stream: queryPropertiesRecord(
+           //        queryBuilder: (propertiesRecord) =>
+           //            propertiesRecord.orderBy('lastUpdated', descending: true),
+           //      ),
+           //      builder: (context, snapshot) {
+           //        // Customize what your widget looks like when it's loading.
+           //        if (!snapshot.hasData) {
+           //          return const Center(
+           //            child: SizedBox(
+           //              width: 50,
+           //              height: 50,
+           //              child: CircularProgressIndicator(
+           //                color: Color(0xFF4B39EF),
+           //              ),
+           //            ),
+           //          );
+           //        }
+           //        List<PropertiesRecord> listViewPropertiesRecordList = snapshot.data!;
+           //        return ListView.builder(
+           //          padding: EdgeInsets.zero,
+           //          primary: false,
+           //          shrinkWrap: true,
+           //          scrollDirection: Axis.vertical,
+           //          itemCount: listViewPropertiesRecordList.length,
+           //          itemBuilder: (context, listViewIndex) {
+           //            final listViewPropertiesRecord =
+           //            listViewPropertiesRecordList[listViewIndex];
+           //            return Padding(
+           //              padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 12),
+           //              child: Container(
+           //                width: double.infinity,
+           //                decoration: BoxDecoration(
+           //                  color: const Color(0xFFFFFFFF),
+           //                  boxShadow: const [
+           //                    BoxShadow(
+           //                      blurRadius: 4,
+           //                      color: Color(0x32000000),
+           //                      offset: Offset(0, 2),
+           //                    )
+           //                  ],
+           //                  borderRadius: BorderRadius.circular(8),
+           //                ),
+           //                child: InkWell(
+           //                  onTap: () async {
+           //                    await Navigator.push(
+           //                      context,
+           //                      MaterialPageRoute(
+           //                        builder: (context) => PropertyDetailsWidget(
+           //                          propertyRef: listViewPropertiesRecord,
+           //                        ),
+           //                      ),
+           //                    );
+           //                  },
+           //                  child: Column(
+           //                    mainAxisSize: MainAxisSize.max,
+           //                    children: [
+           //                      Padding(
+           //                        padding: EdgeInsetsDirectional.fromSTEB(16, 16, 16, 16),
+           //                        child: Row(
+           //                          mainAxisSize: MainAxisSize.max,
+           //                          children: [
+           //                            Expanded(
+           //                              child: Text(
+           //                                listViewPropertiesRecord.propertyName!
+           //                                    .maybeHandleOverflow(
+           //                                  maxChars: 36,
+           //                                  replacement: '…',
+           //                                ),
+           //                                style: GoogleFonts.urbanist(
+           //
+           //                                  color: const Color(0xFF14181B),
+           //                                  fontWeight: FontWeight.bold,
+           //                                  fontSize: 20,
+           //                                ),
+           //                              ),
+           //                            ),
+           //                            IconButton(
+           //
+           //                              icon: const Icon(
+           //                                Icons.edit,
+           //                                color: Colors.black,
+           //                                size: 30,
+           //                              ),
+           //                              onPressed: () {
+           //                                Navigator.push(
+           //                                    context,
+           //                                    MaterialPageRoute(
+           //                                        builder: (context) => UserProfile(
+           //                                          user: user!,
+           //                                        ))).then((value) {
+           //                                  getUserData();
+           //                                });
+           //                              },
+           //                            )
+           //                          ],
+           //                        ),
+           //                      ),
+           //                      Expanded(
+           //                        child: Text(
+           //                          listViewPropertiesRecord.propertyNeighborhood!.maybeHandleOverflow(
+           //                            maxChars: 90,
+           //                            replacement: '…',
+           //                          ),
+           //                          style: GoogleFonts.urbanist(
+           //
+           //                            color: const Color(0x9914181B),
+           //                            fontWeight: FontWeight.bold,
+           //                            fontSize: 15,
+           //                          ),
+           //                        ),
+           //                      ),
+           //                    ],
+           //                  ),
+           //                ),
+           //              ),
+           //            );
+           //          },
+           //        );
+           //      },
+           //    ),
+           //  ),
           ],
         ),
       ),

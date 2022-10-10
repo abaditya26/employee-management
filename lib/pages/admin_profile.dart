@@ -4,8 +4,7 @@ import 'package:employee_management/models/user_model.dart';
 import 'package:employee_management/pages/user_profile.dart';
 import 'package:employee_management/services/auth_services.dart';
 import 'package:employee_management/services/database_services.dart';
-import 'package:employee_management/widgets/add_task_widget.dart';
-import 'package:employee_management/widgets/user_dash_graph_widget.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfileScreenWidget extends StatefulWidget {
@@ -32,6 +31,7 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
       setState(() {
         user = value;
         email = value;
+
         _isLoading = false;
       });
     });
@@ -71,7 +71,48 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
 
+                  width: 100,
+                  height: 100,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF4778FF),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 4,
+                        color: Color(0x33000000),
+                        offset: Offset(0, 2),
+                      )
+                    ],
+                    shape: BoxShape.circle,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(4, 4, 4, 4),
+                    child: Container(
+                      width: 90,
+                      height: 90,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: CachedNetworkImage(
+                          progressIndicatorBuilder: (context, url,
+                              progress) =>
+                              Center(
+                                child: CircularProgressIndicator(
+                                  value: progress.progress,
+                                ),
+                              ),
+                          imageUrl: user!.profileImage),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
               child: Row(
@@ -122,12 +163,14 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () async {
-                  // await Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const sample_size(),
-                  //   ),
-                  // );
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserProfile(
+                            user: user!,
+                          ))).then((value) {
+                    getUserData();
+                  });
                   print('Edit Profile Pressed');
                 },
                 child: Container(
